@@ -2,18 +2,16 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Valentine Estetik</title>
-
+  <!-- Bootstrap CSS untuk tampilan responsif -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Google Fonts: Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  
-  <!-- Animate.css untuk animasi -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
-  <!-- CSS Custom -->
+  <!-- Anime.js untuk animasi -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
   <style>
-    /* Reset CSS sederhana */
+    /* Reset dan pengaturan dasar */
     * {
       margin: 0;
       padding: 0;
@@ -21,225 +19,223 @@
     }
     body {
       font-family: 'Poppins', sans-serif;
-      /* Menggunakan background fallback warna lembut */
-      background: #fceabb;
-      overflow: hidden; /* Sembunyikan scrollbar, karena latar belakang partikel sudah menutupi seluruh layar */
-    }
-    /* Container untuk latar belakang partikel */
-    #particles-js {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
-    /* Konten utama */
-    .content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      padding: 50px;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      overflow-x: hidden;
       color: #333;
     }
-    h1 {
+    /* Styling header */
+    .header {
+      text-align: center;
+      padding: 80px 20px;
+      color: #fff;
+      position: relative;
+    }
+    .header h1 {
       font-size: 3rem;
       margin-bottom: 20px;
+    }
+    .header p {
+      font-size: 1.5rem;
+    }
+    .heart-icon {
+      font-size: 80px;
       color: #e63946;
     }
-    p {
-      font-size: 1.2rem;
-      margin-bottom: 30px;
-    }
-    /* Tombol aksi */
-    .btn {
-      background: #e63946;
-      color: #fff;
-      padding: 15px 30px;
-      border: none;
-      border-radius: 30px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    .btn:hover {
-      background: #d62828;
-    }
-    /* Tampilan teks yang diketik */
-    .typed {
-      font-size: 1.5rem;
-      margin-top: 20px;
-      color: #555;
-    }
-    /* Gaya untuk modal pesan spesial */
-    #modal {
-      display: none;
-    }
-    #modal-content {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #fff;
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      z-index: 3;
-      text-align: center;
-      max-width: 90%;
-    }
-    #modal-backdrop {
-      position: fixed;
+    /* Container untuk efek hati yang mengambang */
+    .floating-hearts {
+      position: absolute;
       top: 0;
       left: 0;
+      pointer-events: none;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 2;
+      overflow: hidden;
+    }
+    .heart {
+      position: absolute;
+      font-size: 2rem;
+      color: #e63946;
+      opacity: 0.8;
+    }
+    /* Styling konten */
+    .content {
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.8);
+      margin: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    /* Styling untuk pesan spesial */
+    #specialMessageContainer {
+      margin-top: 20px;
+      padding: 20px;
+    }
+    .gift-icon {
+      font-size: 3rem;
+    }
+    #specialMessageText {
+      font-size: 2rem;
+      margin-top: 20px;
+    }
+    #loadingContainer {
+      width: 100%;
+      background: #ddd;
+      height: 5px;
+      border-radius: 5px;
+      margin: 20px auto;
+      max-width: 300px;
+    }
+    #loadingBar {
+      height: 100%;
+      background: #007bff;
+      width: 0%;
+      border-radius: 5px;
+    }
+    /* Responsif untuk layar kecil */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+      .header p {
+        font-size: 1.2rem;
+      }
+      .heart-icon {
+        font-size: 50px;
+      }
+      #specialMessageText {
+        font-size: 1.5rem;
+      }
+      .gift-icon {
+        font-size: 2.5rem;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Latar Belakang Partikel -->
-  <div id="particles-js"></div>
+  <!-- Header dengan ucapan Valentine -->
+  <header class="header">
+    <!-- Container untuk animasi hati mengambang -->
+    <div class="floating-hearts" id="floating-hearts"></div>
+    <div class="heart-icon">❤️</div>
+    <h1>Selamat Hari Valentine!</h1>
+    <p>Rayakan cinta dengan keindahan dan estetika</p>
+  </header>
 
-  <!-- Konten Utama -->
-  <div class="content">
-    <!-- Judul Utama dengan animasi fadeInDown -->
-    <h1 class="animate__animated animate__fadeInDown">Valentine Estetik</h1>
-    <!-- Paragraf dengan animasi fadeInUp -->
-    <p class="animate__animated animate__fadeInUp animate__delay-1s">
-      Rayakan kasih sayang dengan desain yang indah dan interaktif.
-    </p>
-    <!-- Tombol untuk menampilkan pesan spesial -->
-    <button class="btn animate__animated animate__bounceIn animate__delay-2s" onclick="tampilPesan()">
-      Klik untuk Pesan Spesial
-    </button>
-    <!-- Efek pengetikan menggunakan Typed.js -->
-    <div class="typed animate__animated animate__fadeInUp animate__delay-3s" id="typed"></div>
-  </div>
-
-  <!-- Modal Pesan Spesial -->
-  <div id="modal">
-    <div id="modal-content">
-      <h2>Pesan Spesial untukmu</h2>
-      <p>Semoga hari-harimu penuh cinta dan kebahagiaan.</p>
-      <br>
-      <button class="btn" onclick="tutupModal()">Tutup</button>
+  <!-- Konten utama menggunakan container Bootstrap -->
+  <div class="container">
+    <div class="content">
+      <h2>Tentang Valentine</h2>
+      <p>
+        Valentine adalah hari yang dirayakan untuk mengungkapkan kasih sayang dan cinta. Di hari ini, 
+        banyak orang memberikan hadiah, kartu, dan ungkapan cinta kepada orang tersayang.
+      </p>
+      <p>
+        Website ini dibuat dengan tujuan memberikan inspirasi melalui desain yang estetik dan interaktif. 
+        Nikmati tampilan yang modern dan animasi yang memukau!
+      </p>
+      <!-- Tombol untuk memunculkan pesan spesial -->
+      <div class="text-center mt-4">
+         <button id="specialMessageBtn" class="btn btn-primary btn-lg">Klik untuk pesan spesial</button>
+      </div>
     </div>
-    <!-- Latar belakang gelap untuk modal -->
-    <div id="modal-backdrop" onclick="tutupModal()"></div>
+    
+    <!-- Area Pesan Spesial (awalnya disembunyikan) -->
+    <div id="specialMessageContainer" class="content text-center" style="display:none;">
+      <div class="gift-icon">🎁</div>
+      <div id="specialMessageText">Pesan akan muncul...</div>
+      <div id="loadingContainer">
+         <div id="loadingBar"></div>
+      </div>
+    </div>
   </div>
 
-  <!-- Library JavaScript -->
-  <!-- Typed.js untuk efek pengetikan -->
-  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-  <!-- Particles.js untuk latar belakang partikel -->
-  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-  
-  <!-- Script JavaScript Kustom -->
+  <!-- Audio element untuk lagu latar -->
+  <audio id="backgroundAudio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- JavaScript untuk interaktivitas -->
   <script>
-    /* -----------------------------------
-       Konfigurasi Particles.js
-    ------------------------------------- */
-    particlesJS("particles-js", {
-      "particles": {
-        "number": {
-          "value": 80,
-          "density": {
-            "enable": true,
-            "value_area": 800
-          }
-        },
-        "color": {
-          "value": "#ff9a9e"
-        },
-        "shape": {
-          "type": "circle",
-          "stroke": {
-            "width": 0,
-            "color": "#000000"
-          }
-        },
-        "opacity": {
-          "value": 0.5,
-          "random": false,
-          "anim": {
-            "enable": false
-          }
-        },
-        "size": {
-          "value": 3,
-          "random": true,
-          "anim": {
-            "enable": false
-          }
-        },
-        "line_linked": {
-          "enable": true,
-          "distance": 150,
-          "color": "#ff9a9e",
-          "opacity": 0.4,
-          "width": 1
-        },
-        "move": {
-          "enable": true,
-          "speed": 6,
-          "direction": "none",
-          "random": false,
-          "straight": false,
-          "out_mode": "out"
+    // Array pesan spesial (minimal 3 kata)
+    const specialMessages = ["Cinta", "Kebahagiaan", "Harapan"];
+    let currentIndex = 0;
+    
+    // Fungsi untuk menampilkan pesan spesial secara bergantian dengan animasi loading
+    function showNextMessage() {
+      if (currentIndex >= specialMessages.length) {
+        return;
+      }
+      // Tampilkan pesan saat ini
+      document.getElementById("specialMessageText").innerText = specialMessages[currentIndex];
+      
+      // Reset loading bar ke 0%
+      const loadingBar = document.getElementById("loadingBar");
+      loadingBar.style.width = "0%";
+      
+      // Animasi loading bar selama 5 detik menggunakan Anime.js
+      anime({
+        targets: loadingBar,
+        width: "100%",
+        duration: 5000,
+        easing: "linear",
+        complete: function() {
+          currentIndex++;
+          showNextMessage();
         }
-      },
-      "interactivity": {
-        "detect_on": "canvas",
-        "events": {
-          "onhover": {
-            "enable": true,
-            "mode": "repulse"
-          },
-          "onclick": {
-            "enable": true,
-            "mode": "push"
-          },
-          "resize": true
-        },
-        "modes": {
-          "repulse": {
-            "distance": 100,
-            "duration": 0.4
-          },
-          "push": {
-            "particles_nb": 4
-          }
+      });
+    }
+    
+    // Event listener untuk tombol pesan spesial
+    document.getElementById("specialMessageBtn").addEventListener("click", function() {
+      // Mulai lagu latar (pastikan browser mengizinkan pemutaran audio setelah interaksi pengguna)
+      const audio = document.getElementById("backgroundAudio");
+      audio.play();
+      
+      // Sembunyikan tombol
+      this.style.display = "none";
+      
+      // Tampilkan area pesan spesial
+      document.getElementById("specialMessageContainer").style.display = "block";
+      
+      // Mulai menampilkan pesan spesial secara bergantian
+      showNextMessage();
+    });
+    
+    // Animasi heartbeat untuk ikon hati di header
+    anime({
+      targets: '.heart-icon',
+      scale: [
+        { value: 1.2, duration: 300 },
+        { value: 1, duration: 300 }
+      ],
+      loop: true,
+      easing: 'easeInOutSine'
+    });
+    
+    // Fungsi untuk membuat efek hati mengambang (floating hearts)
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.innerText = '❤️';
+      heart.style.left = Math.random() * 100 + '%';
+      heart.style.top = '100%';
+      const size = Math.random() * 1.5 + 1.5;
+      heart.style.fontSize = size + 'rem';
+      document.getElementById('floating-hearts').appendChild(heart);
+      
+      anime({
+        targets: heart,
+        translateY: -window.innerHeight - 100,
+        easing: 'linear',
+        duration: Math.random() * 3000 + 4000,
+        complete: function() {
+          heart.remove();
         }
-      },
-      "retina_detect": true
-    });
-
-    /* -----------------------------------
-       Konfigurasi Typed.js
-    ------------------------------------- */
-    var typed = new Typed("#typed", {
-      strings: ["Selamat Hari Valentine!", "Cinta itu indah.", "Senyummu adalah inspirasiku."],
-      typeSpeed: 50,      // Kecepatan pengetikan
-      backSpeed: 25,      // Kecepatan menghapus teks
-      backDelay: 2000,    // Waktu delay sebelum menghapus teks
-      loop: true          // Ulang terus menerus
-    });
-
-    /* -----------------------------------
-       Fungsi untuk menampilkan modal pesan
-    ------------------------------------- */
-    function tampilPesan() {
-      document.getElementById("modal").style.display = "block";
+      });
     }
-    /* -----------------------------------
-       Fungsi untuk menutup modal pesan
-    ------------------------------------- */
-    function tutupModal() {
-      document.getElementById("modal").style.display = "none";
-    }
+    
+    // Buat efek hati mengambang setiap 500 milidetik
+    setInterval(createHeart, 500);
   </script>
 </body>
-</html>
+  </html>
