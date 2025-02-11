@@ -4,12 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Valentine Estetik</title>
-  <!-- Bootstrap CSS untuk tampilan responsif -->
+  <!-- Bootstrap CSS untuk tampilan responsif dan modal -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Google Fonts: Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <!-- Anime.js untuk animasi -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  <!-- Typed.js untuk efek mengetik -->
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
   <style>
     /* Reset dan pengaturan dasar */
     * {
@@ -22,6 +24,8 @@
       background: linear-gradient(135deg, #ff9a9e, #fad0c4);
       overflow-x: hidden;
       color: #333;
+      position: relative;
+      min-height: 100vh;
     }
     /* Styling header */
     .header {
@@ -41,7 +45,7 @@
       font-size: 80px;
       color: #e63946;
     }
-    /* Container untuk efek hati yang mengambang */
+    /* Container untuk efek hati mengambang */
     .floating-hearts {
       position: absolute;
       top: 0;
@@ -57,24 +61,26 @@
       color: #e63946;
       opacity: 0.8;
     }
-    /* Styling konten */
-    .content {
-      padding: 40px;
-      background: rgba(255, 255, 255, 0.8);
-      margin: 20px;
+    /* Styling tombol dan container utama */
+    .main-container {
+      padding: 20px;
+    }
+    .btn-special {
+      font-size: 1.2rem;
+      padding: 10px 20px;
+    }
+    /* Styling modal pesan spesial */
+    .modal-content {
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 15px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    }
-    /* Styling untuk pesan spesial */
-    #specialMessageContainer {
-      margin-top: 20px;
-      padding: 20px;
     }
     .gift-icon {
       font-size: 3rem;
     }
     #specialMessageText {
       font-size: 2rem;
+      min-height: 60px;
       margin-top: 20px;
     }
     #loadingContainer {
@@ -108,43 +114,36 @@
       .gift-icon {
         font-size: 2.5rem;
       }
+      .btn-special {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 <body>
   <!-- Header dengan ucapan Valentine -->
   <header class="header">
-    <!-- Container untuk animasi hati mengambang -->
+    <!-- Efek hati mengambang -->
     <div class="floating-hearts" id="floating-hearts"></div>
     <div class="heart-icon">❤️</div>
     <h1>Selamat Hari Valentine!</h1>
     <p>Rayakan cinta dengan keindahan dan estetika</p>
   </header>
 
-  <!-- Konten utama menggunakan container Bootstrap -->
-  <div class="container">
-    <div class="content">
-      <h2>Tentang Valentine</h2>
-      <p>
-        Valentine adalah hari yang dirayakan untuk mengungkapkan kasih sayang dan cinta. Di hari ini, 
-        banyak orang memberikan hadiah, kartu, dan ungkapan cinta kepada orang tersayang.
-      </p>
-      <p>
-        Website ini dibuat dengan tujuan memberikan inspirasi melalui desain yang estetik dan interaktif. 
-        Nikmati tampilan yang modern dan animasi yang memukau!
-      </p>
-      <!-- Tombol untuk memunculkan pesan spesial -->
-      <div class="text-center mt-4">
-         <button id="specialMessageBtn" class="btn btn-primary btn-lg">Klik untuk pesan spesial</button>
-      </div>
-    </div>
-    
-    <!-- Area Pesan Spesial (awalnya disembunyikan) -->
-    <div id="specialMessageContainer" class="content text-center" style="display:none;">
-      <div class="gift-icon">🎁</div>
-      <div id="specialMessageText">Pesan akan muncul...</div>
-      <div id="loadingContainer">
-         <div id="loadingBar"></div>
+  <!-- Container utama dengan tombol -->
+  <div class="container main-container text-center">
+    <button id="specialMessageBtn" class="btn btn-primary btn-special">Klik untuk pesan spesial</button>
+  </div>
+
+  <!-- Modal Pesan Spesial -->
+  <div class="modal fade" id="specialMessageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content p-4 text-center">
+        <div class="gift-icon">🎁</div>
+        <div id="specialMessageText"></div>
+        <div id="loadingContainer">
+          <div id="loadingBar"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -152,27 +151,42 @@
   <!-- Audio element untuk lagu latar -->
   <audio id="backgroundAudio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
 
-  <!-- Bootstrap JS -->
+  <!-- Bootstrap JS (dengan bundle Popper) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- JavaScript untuk interaktivitas -->
   <script>
     // Array pesan spesial (minimal 3 kata)
     const specialMessages = ["Cinta", "Kebahagiaan", "Harapan"];
     let currentIndex = 0;
-    
-    // Fungsi untuk menampilkan pesan spesial secara bergantian dengan animasi loading
-    function showNextMessage() {
-      if (currentIndex >= specialMessages.length) {
-        return;
+    let typed = null; // Variabel untuk instance Typed.js
+
+    // Fungsi untuk menampilkan pesan dengan efek mengetik
+    function showTypedMessage(index) {
+      if (index >= specialMessages.length) {
+        return; // Selesai jika pesan habis
       }
-      // Tampilkan pesan saat ini
-      document.getElementById("specialMessageText").innerText = specialMessages[currentIndex];
-      
-      // Reset loading bar ke 0%
+      // Bersihkan konten pesan
+      const messageElem = document.getElementById("specialMessageText");
+      messageElem.innerHTML = "";
+
+      // Buat instance Typed.js untuk pesan saat ini
+      typed = new Typed("#specialMessageText", {
+        strings: [specialMessages[index]],
+        typeSpeed: 100,
+        showCursor: false,
+        onComplete: function(self) {
+          // Setelah selesai mengetik, mulai animasi loading bar
+          startLoading(index);
+        }
+      });
+    }
+
+    // Fungsi untuk animasi loading bar selama 5 detik
+    function startLoading(index) {
       const loadingBar = document.getElementById("loadingBar");
+      // Reset loading bar
       loadingBar.style.width = "0%";
-      
-      // Animasi loading bar selama 5 detik menggunakan Anime.js
+
       anime({
         targets: loadingBar,
         width: "100%",
@@ -180,38 +194,32 @@
         easing: "linear",
         complete: function() {
           currentIndex++;
-          showNextMessage();
+          // Jika masih ada pesan, tampilkan pesan berikutnya dengan efek ketik
+          if (currentIndex < specialMessages.length) {
+            showTypedMessage(currentIndex);
+          }
         }
       });
     }
-    
+
     // Event listener untuk tombol pesan spesial
     document.getElementById("specialMessageBtn").addEventListener("click", function() {
-      // Mulai lagu latar (pastikan browser mengizinkan pemutaran audio setelah interaksi pengguna)
+      // Mulai lagu latar (pastikan interaksi pengguna sudah terjadi)
       const audio = document.getElementById("backgroundAudio");
       audio.play();
-      
+
       // Sembunyikan tombol
       this.style.display = "none";
-      
-      // Tampilkan area pesan spesial
-      document.getElementById("specialMessageContainer").style.display = "block";
-      
-      // Mulai menampilkan pesan spesial secara bergantian
-      showNextMessage();
+
+      // Tampilkan modal pesan spesial
+      const modalElem = document.getElementById("specialMessageModal");
+      const modal = new bootstrap.Modal(modalElem);
+      modal.show();
+
+      // Mulai menampilkan pesan pertama dengan efek ketik
+      showTypedMessage(currentIndex);
     });
-    
-    // Animasi heartbeat untuk ikon hati di header
-    anime({
-      targets: '.heart-icon',
-      scale: [
-        { value: 1.2, duration: 300 },
-        { value: 1, duration: 300 }
-      ],
-      loop: true,
-      easing: 'easeInOutSine'
-    });
-    
+
     // Fungsi untuk membuat efek hati mengambang (floating hearts)
     function createHeart() {
       const heart = document.createElement('div');
@@ -222,7 +230,7 @@
       const size = Math.random() * 1.5 + 1.5;
       heart.style.fontSize = size + 'rem';
       document.getElementById('floating-hearts').appendChild(heart);
-      
+
       anime({
         targets: heart,
         translateY: -window.innerHeight - 100,
@@ -233,7 +241,7 @@
         }
       });
     }
-    
+
     // Buat efek hati mengambang setiap 500 milidetik
     setInterval(createHeart, 500);
   </script>
