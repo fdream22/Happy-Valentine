@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Valentine Estetik</title>
+
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  
+  <!-- Animate.css untuk animasi -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <!-- CSS Custom -->
+  <style>
+    /* Reset CSS sederhana */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      /* Menggunakan background fallback warna lembut */
+      background: #fceabb;
+      overflow: hidden; /* Sembunyikan scrollbar, karena latar belakang partikel sudah menutupi seluruh layar */
+    }
+    /* Container untuk latar belakang partikel */
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    /* Konten utama */
+    .content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 50px;
+      color: #333;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #e63946;
+    }
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+    }
+    /* Tombol aksi */
+    .btn {
+      background: #e63946;
+      color: #fff;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .btn:hover {
+      background: #d62828;
+    }
+    /* Tampilan teks yang diketik */
+    .typed {
+      font-size: 1.5rem;
+      margin-top: 20px;
+      color: #555;
+    }
+    /* Gaya untuk modal pesan spesial */
+    #modal {
+      display: none;
+    }
+    #modal-content {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      z-index: 3;
+      text-align: center;
+      max-width: 90%;
+    }
+    #modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+  <!-- Latar Belakang Partikel -->
+  <div id="particles-js"></div>
+
+  <!-- Konten Utama -->
+  <div class="content">
+    <!-- Judul Utama dengan animasi fadeInDown -->
+    <h1 class="animate__animated animate__fadeInDown">Valentine Estetik</h1>
+    <!-- Paragraf dengan animasi fadeInUp -->
+    <p class="animate__animated animate__fadeInUp animate__delay-1s">
+      Rayakan kasih sayang dengan desain yang indah dan interaktif.
+    </p>
+    <!-- Tombol untuk menampilkan pesan spesial -->
+    <button class="btn animate__animated animate__bounceIn animate__delay-2s" onclick="tampilPesan()">
+      Klik untuk Pesan Spesial
+    </button>
+    <!-- Efek pengetikan menggunakan Typed.js -->
+    <div class="typed animate__animated animate__fadeInUp animate__delay-3s" id="typed"></div>
+  </div>
+
+  <!-- Modal Pesan Spesial -->
+  <div id="modal">
+    <div id="modal-content">
+      <h2>Pesan Spesial untukmu</h2>
+      <p>Semoga hari-harimu penuh cinta dan kebahagiaan.</p>
+      <br>
+      <button class="btn" onclick="tutupModal()">Tutup</button>
+    </div>
+    <!-- Latar belakang gelap untuk modal -->
+    <div id="modal-backdrop" onclick="tutupModal()"></div>
+  </div>
+
+  <!-- Library JavaScript -->
+  <!-- Typed.js untuk efek pengetikan -->
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <!-- Particles.js untuk latar belakang partikel -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  
+  <!-- Script JavaScript Kustom -->
+  <script>
+    /* -----------------------------------
+       Konfigurasi Particles.js
+    ------------------------------------- */
+    particlesJS("particles-js", {
+      "particles": {
+        "number": {
+          "value": 80,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color": {
+          "value": "#ff9a9e"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            "color": "#000000"
+          }
+        },
+        "opacity": {
+          "value": 0.5,
+          "random": false,
+          "anim": {
+            "enable": false
+          }
+        },
+        "size": {
+          "value": 3,
+          "random": true,
+          "anim": {
+            "enable": false
+          }
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#ff9a9e",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 6,
+          "direction": "none",
+          "random": false,
+          "straight": false,
+          "out_mode": "out"
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": true,
+            "mode": "repulse"
+          },
+          "onclick": {
+            "enable": true,
+            "mode": "push"
+          },
+          "resize": true
+        },
+        "modes": {
+          "repulse": {
+            "distance": 100,
+            "duration": 0.4
+          },
+          "push": {
+            "particles_nb": 4
+          }
+        }
+      },
+      "retina_detect": true
+    });
+
+    /* -----------------------------------
+       Konfigurasi Typed.js
+    ------------------------------------- */
+    var typed = new Typed("#typed", {
+      strings: ["Selamat Hari Valentine!", "Cinta itu indah.", "Senyummu adalah inspirasiku."],
+      typeSpeed: 50,      // Kecepatan pengetikan
+      backSpeed: 25,      // Kecepatan menghapus teks
+      backDelay: 2000,    // Waktu delay sebelum menghapus teks
+      loop: true          // Ulang terus menerus
+    });
+
+    /* -----------------------------------
+       Fungsi untuk menampilkan modal pesan
+    ------------------------------------- */
+    function tampilPesan() {
+      document.getElementById("modal").style.display = "block";
+    }
+    /* -----------------------------------
+       Fungsi untuk menutup modal pesan
+    ------------------------------------- */
+    function tutupModal() {
+      document.getElementById("modal").style.display = "none";
+    }
+  </script>
+</body>
+</html>
